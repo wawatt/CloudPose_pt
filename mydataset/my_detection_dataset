@@ -48,7 +48,7 @@ class myDetectionDataset(Dataset):
         # ------------------------------- LABELS ------------------------------
         ret_dict = {}
         point_cloud = pc_util.random_sampling(point_cloud, self.num_points)
-        one_hot = DC.sem2class(bbox[19])
+        one_hot = DC.sem2class(bbox[16])
         one_hot_ex_rep = np.repeat(np.expand_dims(one_hot, axis=0), self.num_points, axis=0)
         point_cloud_with_cls = np.concatenate((point_cloud, one_hot_ex_rep), axis=1)
 
@@ -63,5 +63,4 @@ class myDetectionDataset(Dataset):
         ret_dict['translate_label'] = translate.astype(np.float32)
 
         return ret_dict
-
 
