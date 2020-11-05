@@ -1,0 +1,55 @@
+# Copyright (c) Facebook, Inc. and its affiliates.
+# 
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+import numpy as np
+import open3d as o3d
+import sys
+import os
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
+ROOT_DIR = os.path.dirname(BASE_DIR)
+sys.path.append(os.path.join(ROOT_DIR, 'utils'))
+import pc_util
+
+class myDatasetConfig(object):
+    def __init__(self):
+        self.num_class = 5
+
+        self.type2class = {'cl0':0, 'cl1':1, 'cl2':2, 'cl3':3, 'cl4':4}
+
+        self.class2type = {self.type2class[t]: t for t in self.type2class}
+
+        self.type2onehotclass = {'cl0': np.array([1, 0, 0, 0, 0]),
+                                 'cl1': np.array([0, 1, 0, 0, 0]),
+                                 'cl2': np.array([0, 0, 1, 0, 0]),
+                                 'cl3': np.array([0, 0, 0, 1, 0]),
+                                 'cl4': np.array([0, 0, 0, 0, 1])}
+
+    def sem2class(self, cls):
+        onehot = self.type2onehotclass[self.class2type[cls]]
+        return onehot
+
+    def size2class(self, type_name):
+        ''' Convert 3D box size (l,w,h) to size class and size residual '''
+        size_class = self.type2class[type_name]  # 0
+        # size_residual = size - self.type_mean_size[type_name]  # 尺寸
+        return size_class
+
+    def class2size(self, pred_cls):
+        ''' Inverse function to size2class '''
+        mean_size = self.type_mean_size[self.class2type[pred_cls]]
+        return mean_size
+
+    def class2sem(self, pred_cls):
+        sem = self.class2type[pred_cls]
+        return sem
+
+
+
+
+
+
