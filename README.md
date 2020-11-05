@@ -4,7 +4,7 @@ CloudPose pytorch version for my practice.
 
 This repository contains the implementation of CloudPose in PyTorch.
 
-This is a pytorch implementation of "Learning Object Pose Estimation with Point Cloud"
+From Paper: "Learning Object Pose Estimation with Point Cloud"
 
 CloudPose is also available in [Tensorflow](https://github.com/GeeeG/CloudPose) 
 
