@@ -291,4 +291,3 @@ class BNMomentumScheduler(object):
 
         self.last_epoch = epoch
         self.model.apply(self.setter(self.lmbd(epoch)))
-
