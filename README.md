@@ -1,5 +1,5 @@
 # CloudPose_pt
-CloudPose pytorch version for my practice.
+CloudPose pytorch version.
 ## Introduction
 
 This repository contains the implementation of CloudPose in PyTorch.
