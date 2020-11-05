@@ -1,5 +1,6 @@
 # CloudPose_pt
 CloudPose pytorch version.
+train and val with your own dataset
 ## Introduction
 
 This repository contains the implementation of CloudPose in PyTorch.
@@ -18,7 +19,7 @@ opencv-python
 
 ## Preparations
 
-### Make your own data set
+### Make your own dataset
 
 0000_seg.npy, 0001_seg.npy...respectively are two-dimensional numpy arrays containing 1024*channel, representing the points in the scene point cloud that have been segmented and downsampled  to 1024.
 
