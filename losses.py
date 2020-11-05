@@ -73,6 +73,7 @@ def clip_by_tensor(t, t_min, t_max):
     :param t_min: min
     :param t_max: max
     :return: cliped tensor
+    code from https://blog.csdn.net/york1996/article/details/89434935
     """
 
     result = (t >= t_min).double() * t + (t < t_min).double() * t_min
