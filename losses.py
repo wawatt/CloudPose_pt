@@ -6,7 +6,6 @@ CLASS_NAME = ['cl0', 'cl1', 'cl2','cl3','cl4']
 def skew_symmetric(axag_unit):
     """
     Create the skew symmetric matrix for the input vector
-    为输入向量创建倾斜对称矩阵
     v = (v_1, v_2, v_3)
     v_ss = | 0    -v_3    v_2 |
            | v_3     0   -v_1 |
@@ -33,7 +32,6 @@ def skew_symmetric(axag_unit):
 def exponential_map(axag, EPS=1e-2):
     """
     Create exponential map for axis-angle representation using Rodrigues' formula
-    使用Rodrigues的公式为轴角表示创建指数图
     axag = theta * v_hat
     exp(theta * v_hat) = I + sin(theta)[v_hat]_x + (1 - cos(theta))([v_hat]_x)^2
     For small angle values, use Taylor expansion
