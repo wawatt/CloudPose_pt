@@ -39,17 +39,19 @@ example:
 
 ./mydataset/my_train/0001_pos.npy
 
+etc.
 
 #### val:
 
-./mydataset/my_val/0000_seg.npy
+./mydataset/my_val/8000_seg.npy
 
-./mydataset/my_val/0000_pos.npy
+./mydataset/my_val/8000_pos.npy
 
-./mydataset/my_val/0001_seg.npy
+./mydataset/my_val/8001_seg.npy
 
-./mydataset/my_val/0001_pos.npy
+./mydataset/my_val/8001_pos.npy
 
+etc.
 
 ## Train a network
 
