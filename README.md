@@ -1,6 +1,7 @@
 # CloudPose_pt
 CloudPose pytorch version.
-train and val with your own dataset
+
+You can train and val with your own dataset.
 ## Introduction
 
 This repository contains the implementation of CloudPose in PyTorch.
