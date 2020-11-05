@@ -36,7 +36,7 @@ class myDetectionDataset(Dataset):
     def __getitem__(self, idx):
 
         scan_name = self.scan_names[idx]
-        point_cloud = np.load(os.path.join(self.data_path, scan_name)+'_seg.npz')['arr_0'] # Nx3
+        point_cloud = np.load(os.path.join(self.data_path, scan_name)+'_seg.npy') # Nx3
         bbox = np.load(os.path.join(self.data_path, scan_name)+'_pos.npy') # K,20
 
         if not self.use_color:
