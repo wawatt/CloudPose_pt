@@ -12,7 +12,9 @@ CloudPose is also available in [Tensorflow](https://github.com/GeeeG/CloudPose)
 
 Pytorch(tested with 1.1.0--1.5.0) on CUDA(tested with 10.0--10.2)
 
-Tensorflow (tested with 1.14.0) for tensorboard
+Tensorflow (tested with 1.14.0) for TensorBoard
+
+opencv-python
 
 ## Preparations
 
