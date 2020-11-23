@@ -97,8 +97,8 @@ class CloudPose_all(nn.Module):
         self.num_class = num_class
         self.channel = channel
 
-        self.trans = CloudPose_trans(self.num_class, self.channel)
-        self.rot = CloudPose_rot(self.num_class, self.channel)
+        self.trans = CloudPose_trans(self.channel, self.num_class)
+        self.rot = CloudPose_rot(self.channel, self.num_class)
 
     def forward(self, input):
         point_clouds = input['point_clouds']
