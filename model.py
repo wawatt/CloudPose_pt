@@ -103,12 +103,15 @@ class CloudPose_all(nn.Module):
     def forward(self, input):
         point_clouds = input['point_clouds']
         point_clouds_tp = point_clouds.transpose(1, 2) # b 8 256
-        r, ind_r = self.rot(point_clouds_tp)
+        
         base_xyz = torch.mean(point_clouds_tp[:, :self.channel, :], dim=2)
         point_clouds_res = point_clouds_tp[:, :self.channel, :] - base_xyz.unsqueeze(-1)  # b 3 1
         point_clouds_res_with_cls = torch.cat((point_clouds_res, point_clouds_tp[:, self.channel:, :]),
                                               dim=1)  # channel 在前 cls在后
+        
         t, ind_t = self.trans(point_clouds_res_with_cls)
+        r, ind_r = self.rot(point_clouds_res_with_cls)  # better than point_clouds_tp
+        # r, ind_r = self.rot(point_clouds_tp)
 
         end_points = {}
         end_points['translate_pred'] = t + base_xyz
