@@ -3,7 +3,6 @@ import torch.utils.data
 import torch.nn.functional as F
 
 
-
 class CloudPose_trans(nn.Module):
     def __init__(self, channel=3, num_class=5):
         super(CloudPose_trans, self).__init__()
@@ -101,28 +100,31 @@ class CloudPose_all(nn.Module):
         self.rot = CloudPose_rot(self.channel, self.num_class)
 
     def forward(self, input):
-        point_clouds = input['point_clouds']
-        point_clouds_tp = point_clouds.transpose(1, 2) # b 8 256
-        
-        base_xyz = torch.mean(point_clouds_tp[:, :self.channel, :], dim=2)
-        point_clouds_res = point_clouds_tp[:, :self.channel, :] - base_xyz.unsqueeze(-1)  # b 3 1
-        point_clouds_res_with_cls = torch.cat((point_clouds_res, point_clouds_tp[:, self.channel:, :]),
-                                              dim=1)  # channel 在前 cls在后
-        
+        point_clouds = input["point_clouds"]
+        point_clouds_tp = point_clouds.transpose(1, 2)  # b 8 256
+
+        base_xyz = torch.mean(point_clouds_tp[:, : self.channel, :], dim=2)
+        point_clouds_res = point_clouds_tp[:, : self.channel, :] - base_xyz.unsqueeze(
+            -1
+        )  # b 3 1
+        point_clouds_res_with_cls = torch.cat(
+            (point_clouds_res, point_clouds_tp[:, self.channel :, :]), dim=1
+        )  # channel 在前 cls在后
+
         t, ind_t = self.trans(point_clouds_res_with_cls)
         r, ind_r = self.rot(point_clouds_res_with_cls)  # better than point_clouds_tp
         # r, ind_r = self.rot(point_clouds_tp)
 
         end_points = {}
-        end_points['translate_pred'] = t + base_xyz
-        end_points['axag_pred'] = r
+        end_points["translate_pred"] = t + base_xyz
+        end_points["axag_pred"] = r
         return end_points
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sim_data = torch.rand(32, 2500, 3 + 5)
     input = {}
-    input['point_clouds'] = sim_data
+    input["point_clouds"] = sim_data
     feat = CloudPose_all(3, 5)
     end_points = feat(input)
-    print( end_points['translate_pred'],end_points['axag_pred'])
+    print(end_points["translate_pred"], end_points["axag_pred"])

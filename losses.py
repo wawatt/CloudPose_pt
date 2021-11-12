@@ -1,7 +1,8 @@
 import torch
 
 
-CLASS_NAME = ['cl0', 'cl1', 'cl2','cl3','cl4']
+CLASS_NAME = ["cl0", "cl1", "cl2", "cl3", "cl4"]
+
 
 def skew_symmetric(axag_unit):
     """
@@ -17,14 +18,31 @@ def skew_symmetric(axag_unit):
     sh = axag_unit.shape
     axag_unit_exp = torch.unsqueeze(torch.unsqueeze(axag_unit, 2), 3)
 
-    row1 = torch.cat([torch.zeros((sh[0], 1, 1), dtype=torch.float64).cuda(),
-                      -axag_unit_exp[:, 2, :, :], axag_unit_exp[:, 1, :, :]], dim=2)
-    row2 = torch.cat([axag_unit_exp[:, 2, :, :], torch.zeros((sh[0], 1, 1), dtype=torch.float64).cuda(),
-                      -axag_unit_exp[:, 0, :, :]], dim=2)
+    row1 = torch.cat(
+        [
+            torch.zeros((sh[0], 1, 1), dtype=torch.float64).cuda(),
+            -axag_unit_exp[:, 2, :, :],
+            axag_unit_exp[:, 1, :, :],
+        ],
+        dim=2,
+    )
+    row2 = torch.cat(
+        [
+            axag_unit_exp[:, 2, :, :],
+            torch.zeros((sh[0], 1, 1), dtype=torch.float64).cuda(),
+            -axag_unit_exp[:, 0, :, :],
+        ],
+        dim=2,
+    )
 
     row3 = torch.cat(
-        [-axag_unit_exp[:, 1, :, :], axag_unit_exp[:, 0, :, :], torch.zeros((sh[0], 1, 1), dtype=torch.float64).cuda()],
-        dim=2)
+        [
+            -axag_unit_exp[:, 1, :, :],
+            axag_unit_exp[:, 0, :, :],
+            torch.zeros((sh[0], 1, 1), dtype=torch.float64).cuda(),
+        ],
+        dim=2,
+    )
     axag_unit_ss = torch.cat([row1, row2, row3], dim=1)
     return axag_unit_ss
 
@@ -50,18 +68,38 @@ def exponential_map(axag, EPS=1e-2):
     theta_pow_6 = theta_sq * theta_sq * theta_sq
     theta_pow_8 = theta_sq * theta_sq * theta_sq * theta_sq
 
-    term_1 = torch.where(is_angle_small,
-                         1 - (theta_sq / 6.0) + (theta_pow_4 / 120) - (theta_pow_6 / 5040) + (theta_pow_8 / 362880),
-                         torch.sin(theta) / theta)
+    term_1 = torch.where(
+        is_angle_small,
+        1
+        - (theta_sq / 6.0)
+        + (theta_pow_4 / 120)
+        - (theta_pow_6 / 5040)
+        + (theta_pow_8 / 362880),
+        torch.sin(theta) / theta,
+    )
 
-    term_2 = torch.where(is_angle_small,
-                         0.5 - (theta_sq / 24.0) + (theta_pow_4 / 720) - (theta_pow_6 / 40320) + (
-                                 theta_pow_8 / 3628800),
-                         (1 - torch.cos(theta)) / theta_sq)
+    term_2 = torch.where(
+        is_angle_small,
+        0.5
+        - (theta_sq / 24.0)
+        + (theta_pow_4 / 720)
+        - (theta_pow_6 / 40320)
+        + (theta_pow_8 / 3628800),
+        (1 - torch.cos(theta)) / theta_sq,
+    )
     term_1_expand = torch.unsqueeze(torch.unsqueeze(term_1, 1), 2)
     term_2_expand = torch.unsqueeze(torch.unsqueeze(term_2, 1), 2)
-    batch_identity = torch.eye(3, dtype=torch.float64).unsqueeze(0).repeat(axag.shape[0], 1, 1).cuda()
-    axag_exp = batch_identity + torch.mul(term_1_expand, ss) + torch.mul(term_2_expand, torch.matmul(ss, ss))
+    batch_identity = (
+        torch.eye(3, dtype=torch.float64)
+        .unsqueeze(0)
+        .repeat(axag.shape[0], 1, 1)
+        .cuda()
+    )
+    axag_exp = (
+        batch_identity
+        + torch.mul(term_1_expand, ss)
+        + torch.mul(term_2_expand, torch.matmul(ss, ss))
+    )
 
     return axag_exp
 
@@ -109,10 +147,12 @@ def logarithm(R, b_deal_with_sym=False, EPS=1e-2):
     theta_pow_6 = theta_pow_2 * theta_pow_4
 
     # ss = (R - tf.matrix_transpose(R))
-    ss = (R - R.transpose(1, 2))
-    mul_expand = torch.where(is_angle_small,
-                             0.5 + (theta_pow_2 / 12) + (7 * theta_pow_4 / 720) + (31 * theta_pow_6 / 30240),
-                             theta / (2 * torch.sin(theta)))
+    ss = R - R.transpose(1, 2)
+    mul_expand = torch.where(
+        is_angle_small,
+        0.5 + (theta_pow_2 / 12) + (7 * theta_pow_4 / 720) + (31 * theta_pow_6 / 30240),
+        theta / (2 * torch.sin(theta)),
+    )
     if b_deal_with_sym:
         log_R = torch.unsqueeze(torch.unsqueeze(mul_expand, 2), 3) * ss
     else:
@@ -122,12 +162,12 @@ def logarithm(R, b_deal_with_sym=False, EPS=1e-2):
 
 
 def get_rotation_error(pred, label):
-    '''
+    """
     Return (mean) rotation error in form of angular distance in SO(3)
     :param pred: B,3 tensor
     :param label: B,3 tensor
     :return: 1D scalar
-    '''
+    """
     pred_expMap = exponential_map(pred)
 
     label_expMap = exponential_map(label)
@@ -145,33 +185,37 @@ def get_translation_error(pred, label):
 
 
 def get_loss(end_points):
-    translate_pred = end_points['translate_pred']
-    translate_label = end_points['translate_label']
-    axag_pred = end_points['axag_pred']
-    axag_label = end_points['axag_label']
+    translate_pred = end_points["translate_pred"]
+    translate_label = end_points["translate_label"]
+    axag_pred = end_points["axag_pred"]
+    axag_label = end_points["axag_label"]
 
-    point_class = end_points['point_clouds'][:, 0, 3:].double()
+    point_class = end_points["point_clouds"][:, 0, 3:].double()
 
-    trans_loss, trans_perLoss = get_translation_error(translate_pred.double(), translate_label.double())
-    axag_loss, axag_perLoss = get_rotation_error(axag_pred.double(), axag_label.double())
+    trans_loss, trans_perLoss = get_translation_error(
+        translate_pred.double(), translate_label.double()
+    )
+    axag_loss, axag_perLoss = get_rotation_error(
+        axag_pred.double(), axag_label.double()
+    )
     total_loss = 10 * trans_loss + axag_loss
     total_perloss = 10 * trans_perLoss + axag_perLoss
 
     trans_perLoss = torch.unsqueeze(trans_perLoss, dim=0).t() * point_class
-    trans_clsLoss = torch.sum(trans_perLoss, dim=0)/torch.sum(point_class, dim=0)
+    trans_clsLoss = torch.sum(trans_perLoss, dim=0) / torch.sum(point_class, dim=0)
     axag_perLoss = torch.unsqueeze(axag_perLoss, dim=0).t() * point_class
-    axag_clsLoss = torch.sum(axag_perLoss, dim=0)/torch.sum(point_class, dim=0)
+    axag_clsLoss = torch.sum(axag_perLoss, dim=0) / torch.sum(point_class, dim=0)
     total_perloss = torch.unsqueeze(total_perloss, dim=0).t() * point_class
-    total_clsLoss = torch.sum(total_perloss, dim=0)/torch.sum(point_class, dim=0)
+    total_clsLoss = torch.sum(total_perloss, dim=0) / torch.sum(point_class, dim=0)
 
-    end_points['trans_loss'] = trans_loss
-    end_points['axag_loss'] = axag_loss
-    end_points['total_loss'] = total_loss
-  
+    end_points["trans_loss"] = trans_loss
+    end_points["axag_loss"] = axag_loss
+    end_points["total_loss"] = total_loss
+
     return total_loss, end_points
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     label = torch.tensor([[0.6977, 0.8248, 0.9367]], dtype=torch.float64).cuda()
     pred = torch.tensor([[-2.100418, -2.167796, 0.2733]], dtype=torch.float64).cuda()
     # print(torch.matmul(pred, label))
