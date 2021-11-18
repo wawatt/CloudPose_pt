@@ -1,0 +1,5 @@
+outs:
+- md5: 942553026c3d1528c57aa93a2909eea7.dir
+  size: 740585797
+  nfiles: 22
+  path: ycb_video_obj_ply
