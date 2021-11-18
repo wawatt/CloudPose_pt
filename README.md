@@ -8,7 +8,7 @@ This repository contains the implementation of CloudPose in PyTorch.
 
 From Paper: "Learning Object Pose Estimation with Point Cloud"
 
-CloudPose is also available in [Tensorflow](https://github.com/GeeeG/CloudPose) 
+CloudPose is also available in [Tensorflow](https://github.com/GeeeG/CloudPose)
 
 ## Requirements
 
@@ -19,7 +19,9 @@ Tensorflow (tested with 1.14.0) for TensorBoard
 opencv-python
 
 ## Preparations
+### Data Version Control
 
+All data and model files are version controlled, managed by [DVC](https://dvc.org).
 ### Make your own dataset
 
 0000_seg.npy, 0001_seg.npy...respectively are two-dimensional numpy arrays containing 1024*channel, representing the points in the scene point cloud that have been segmented and downsampled  to 1024.
